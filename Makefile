@@ -36,7 +36,7 @@ run-tests-create:
 	pytest -s -m "create" --alluredir=$(CURDIR)/report
 
 run-tests-delete:
-	pytest -s -m "create" --alluredir=$(CURDIR)/delete
+	pytest -s -m "delete" --alluredir=$(CURDIR)/report
 
 clean:
 	rm -rf $(CURDIR)/report/*.json
