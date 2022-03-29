@@ -11,6 +11,8 @@
     
 2. To open allure report run in terminal : 
 
-        allure serve "$PWD"
+        allure serve "$PWD/report"
         
 3. Enjoy
+
+Many thanks Avast for https://github.com/avast/pytest-docker

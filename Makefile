@@ -27,6 +27,6 @@ docker-run: kill rm pull
 	-p 8080:8091 $(DOCKER_IMAGE)
 
 run-tests:
-	pytest -s --alluredir=$(CURDIR)
+	pytest -s --alluredir=$(CURDIR)/report
 
 .PHONY: pull kill rm docker-run run-tests
