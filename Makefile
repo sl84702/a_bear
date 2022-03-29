@@ -29,8 +29,17 @@ docker-run: kill rm pull
 run-tests:
 	pytest -s --alluredir=$(CURDIR)/report
 
+run-tests-info:
+	pytest -s -m "info" --alluredir=$(CURDIR)/report
+
+run-tests-create:
+	pytest -s -m "create" --alluredir=$(CURDIR)/report
+
+run-tests-delete:
+	pytest -s -m "create" --alluredir=$(CURDIR)/delete
+
 clean:
 	rm -rf $(CURDIR)/report/*.json
 	rm -rf $(CURDIR)/report/*.txt
 
-.PHONY: pull kill rm docker-run run-tests clean
+.PHONY: pull kill rm docker-run run-tests run-tests-info run-tests-create run-tests-delete clean
