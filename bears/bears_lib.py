@@ -2,11 +2,11 @@ import enum
 import allure
 import pytest
 import requests
+import logging
 from http import HTTPStatus
 from requests.exceptions import ConnectionError
 
-
-# from pytest_schema import schema, like
+LOGGER = logging.getLogger(__name__)
 
 
 class Bear(enum.Enum):
@@ -56,3 +56,28 @@ def is_responsive(url):
             return True
     except ConnectionError:
         return False
+
+
+def log_response(response):
+    LOGGER.info('Status code is: %s', response.status_code)
+    LOGGER.info('Content is: %s', response.content)
+
+
+def user_create_bear(bear_type: Bear, name: str, age: float):
+    with allure.step('User create simple new bear'):
+        response = create_new_bear(bear_type, name, age)
+        log_response(response)
+    with allure.step('Response code is OK'):
+        assert response.status_code == HTTPStatus.OK
+    return response
+
+
+def user_view_all_bears():
+    with allure.step('User view bear'):
+        response = get_all_bears()
+        log_response(response)
+        data = response.json()
+        allure.attach(str(data), 'BEARS LIST IS', allure.attachment_type.TEXT)
+        with allure.step('Response code is OK'):
+            assert response.status_code == HTTPStatus.OK
+        return data
