@@ -24,7 +24,7 @@ rm:
 
 docker-run: kill rm pull
 	docker run -t -i --rm \
-	-p 8080:8091 $(DOCKER_IMAGE)
+	-p 8091:8091 $(DOCKER_IMAGE)
 
 run-tests:
 	pytest -s --alluredir=$(CURDIR)/report
