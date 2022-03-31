@@ -2,7 +2,6 @@ import json
 import allure
 import pytest
 import bears.bears_lib as bears
-# from bears.bears_lib import *
 
 
 @allure.step('Cleanup')

@@ -14,13 +14,6 @@ def http_service(docker_ip, docker_services):
     return bears.base_url
 
 
-def test_status_code(http_service):
-    status = 418
-    response = bears.requests.get(http_service + "/status/{}".format(status))
-
-    assert response.status_code == status
-
-
 @pytest.fixture(scope="session")
 @allure.step('Go to docker-compose')
 def docker_compose_file(pytestconfig):
