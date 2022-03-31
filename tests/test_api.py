@@ -1,14 +1,7 @@
-import allure
-import pytest
-import requests
 import json
-from http import HTTPStatus
-import logging
 
 from bears.bears_lib import *
 
-
-# LOGGER = logging.getLogger(__name__)
 
 @allure.step('Cleanup')
 @pytest.fixture(scope='function')

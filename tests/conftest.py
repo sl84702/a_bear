@@ -1,8 +1,7 @@
 import os
 
-import pytest
-import requests
 from bears.bears_lib import *
+
 
 @allure.step('Wait docker service')
 @pytest.fixture(scope="session")
@@ -13,11 +12,13 @@ def http_service(docker_ip, docker_services):
     )
     return base_url
 
+
 def test_status_code(http_service):
     status = 418
     response = requests.get(http_service + "/status/{}".format(status))
 
     assert response.status_code == status
+
 
 @pytest.fixture(scope="session")
 @allure.step('Go to docker-compose')
