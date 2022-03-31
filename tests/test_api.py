@@ -26,9 +26,10 @@ def cleanup(http_service):
 def test_get_info(cleanup):
     with allure.step('User get info requests'):
         response = get_info()
-        log_response(response)
-    with allure.step('Response code is OK'):
-        assert response.status_code == HTTPStatus.OK
+    check_response_ok(response)
+    with allure.step('And information is correctly'):
+        assert response.content.decode("utf-8") == info
+
 
 
 @allure.feature('CREATE')
@@ -86,11 +87,60 @@ def test_user_can_delete_several_bears_one_by_one(cleanup, bear_type, bear_name,
 
 
 @allure.feature('UPDATE')
-@allure.title('User can update bear age to 0')
+@allure.title('User can update several bears age one by one')
 @pytest.mark.update
-def test_can_update_bear_age_to_0(cleanup):
-    with allure.step('User view bear'):
-        response = get_all_bears()
+@pytest.mark.parametrize('bear_type, bear_name, bear_age, bear_count', [
+    pytest.param(Bear.polar, 'UMKA', 10.1, 10, marks=pytest.mark.xfail(reason="Bug", strict=True))
+])
+def test_user_can_update_several_bears_age(cleanup, bear_type, bear_name, bear_age, bear_count):
+    new_age = 20.2
+    for bear in range(bear_count):
+        user_create_bear(bear_type, bear_name, bear_age)
+
+    all_bears = user_view_all_bears()
+    for bear in all_bears:
+        user_update_bear(bear["bear_id"], bear_type, bear_name, new_age)
+        got_bear = user_get_one_bear(bear["bear_id"])
+        bear_data = json.loads(got_bear.content.decode("utf-8"))
+        check_bear(bear_data, bear_type, bear_name, new_age)
+
+
+@allure.feature('UPDATE')
+@allure.title('User can update several bears name one by one')
+@pytest.mark.update
+@pytest.mark.parametrize('bear_type, bear_name, bear_age, bear_count', [
+    pytest.param(Bear.polar, 'UMKA', 10.1, 10)
+])
+def test_user_can_update_several_bears_name(cleanup, bear_type, bear_name, bear_age, bear_count):
+    new_name = "NIDA"
+    for bear in range(bear_count):
+        user_create_bear(bear_type, bear_name, bear_age)
+
+    all_bears = user_view_all_bears()
+    for bear in all_bears:
+        user_update_bear(bear["bear_id"], bear_type, new_name, bear_age)
+        got_bear = user_get_one_bear(bear["bear_id"])
+        bear_data = json.loads(got_bear.content.decode("utf-8"))
+        check_bear(bear_data, bear_type, new_name, bear_age)
+
+
+@allure.feature('UPDATE')
+@allure.title('User can update several bears type one by one')
+@pytest.mark.update
+@pytest.mark.parametrize('bear_type, bear_name, bear_age, bear_count', [
+    pytest.param(Bear.polar, 'UMKA', 10.1, 10, marks=pytest.mark.xfail(reason="Bug", strict=True))
+])
+def test_user_can_update_several_bears_type(cleanup, bear_type, bear_name, bear_age, bear_count):
+    new_type = Bear.brown
+    for bear in range(bear_count):
+        user_create_bear(bear_type, bear_name, bear_age)
+
+    all_bears = user_view_all_bears()
+    for bear in all_bears:
+        user_update_bear(bear["bear_id"], new_type, bear_name, bear_age)
+        got_bear = user_get_one_bear(bear["bear_id"])
+        bear_data = json.loads(got_bear.content.decode("utf-8"))
+        check_bear(bear_data, new_type, bear_name, bear_age)
 
 
 @allure.feature('READ')
@@ -109,16 +159,3 @@ def test_can_get_info_about_many_bears(cleanup, bear_type, bear_name, bear_age, 
         got_bear = user_get_one_bear(bear["bear_id"])
         bear_data = json.loads(got_bear.content.decode("utf-8"))
         check_bear(bear_data, bear_type, bear_name, bear_age)
-
-
-@allure.feature('READ')
-@allure.title('User cannot get information about a non-existent bear')
-@pytest.mark.read
-def test_user_cannot_get_info_about_non_existent_bear(cleanup):
-    invalid_id = 1
-    with allure.step('Using invalid id'):
-        got_bear = user_get_one_bear(invalid_id)
-        bear_data = json.loads(got_bear.content.decode("utf-8"))
-        allure.attach(str(bear_data), 'Bear info is:', allure.attachment_type.TEXT)
-        logging.info(str(bear_data))
-

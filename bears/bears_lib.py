@@ -21,6 +21,20 @@ header = {'Content-Type': 'application/json'}
 info_path = "info"
 bear_path = "bear"
 
+info = """Welcome to Alaska!
+This is CRUD service for bears in alaska.
+CRUD routes presented with REST naming notation:
+
+POST			/bear - create
+GET			/bear - read all bears
+GET			/bear/:id - read specific bear
+PUT			/bear/:id - update specific bear
+DELETE			/bear - delete all bears
+DELETE			/bear/:id - delete specific bear
+
+Example of ber json: {"bear_type":"BLACK","bear_name":"mikhail","bear_age":17.5}.
+Available types for bears are: POLAR, BROWN, BLACK and GUMMY."""
+
 
 @allure.step('Get info')
 def get_info():
@@ -54,6 +68,13 @@ def create_new_bear(bear_type: Bear, name: str, age: float):
                          headers=header)
 
 
+@allure.step('User update bear')
+def update_bear(bear_id: int, bear_type: Bear, name: str, age: float):
+    return requests.put(url=f'{base_url}/{bear_path}/{bear_id}',
+                        json={'bear_type': bear_type.value, 'bear_name': name, 'bear_age': age},
+                        headers=header)
+
+
 def is_responsive(url):
     try:
         response = requests.get(url)
@@ -81,6 +102,13 @@ def user_create_bear(bear_type: Bear, name: str, age: float):
     check_response_ok(response)
     return response
 
+
+@allure.step('User update bear')
+def user_update_bear(bear_id: int, bear_type: Bear, name: str, age: float):
+    with allure.step('User update one bear'):
+        response = update_bear(bear_id, bear_type, name, age)
+    check_response_ok(response)
+    return response
 
 @allure.step('User get bear')
 def user_get_one_bear(bear_id: int):
