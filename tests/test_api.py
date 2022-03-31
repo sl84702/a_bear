@@ -20,7 +20,7 @@ def test_get_info(cleanup):
         response = bears.get_info()
     bears.check_response_ok(response)
     with allure.step('And information is correctly'):
-        assert response.content.decode("utf-8") == bears.info
+        assert response.content.decode("utf-8") == bears.info, "Information is incorrect"
 
 
 
@@ -39,7 +39,7 @@ def test_user_can_create_several_bear(cleanup, bear_type, bear_name, bear_age, b
 
     all_bears = bears.user_view_all_bears()
     with allure.step('Counting bears'):
-        assert len(all_bears) == bear_count
+        assert len(all_bears) == bear_count, "The number of bears does not match"
 
     for bear in all_bears:
         bears.check_bear(bear, bear_type, bear_name, bear_age)
@@ -56,7 +56,7 @@ def test_user_can_delete_all_bears_bear_count_1(cleanup, bear_type, bear_name, b
     bears.user_clean_all_bears()
     all_bears = bears.user_view_all_bears()
     with allure.step('There should only be 0 bears'):
-        assert len(all_bears) == 0
+        assert len(all_bears) == 0, "Bears should not be after delete"
 
 
 @allure.feature('DELETE')
@@ -75,7 +75,7 @@ def test_user_can_delete_several_bears_one_by_one(cleanup, bear_type, bear_name,
 
     all_bears = bears.user_view_all_bears()
     with allure.step('There should only be 0 bears'):
-        assert len(all_bears) == 0
+        assert len(all_bears) == 0, "Bears should not be after delete"
 
 
 @allure.feature('UPDATE')
@@ -139,7 +139,7 @@ def test_user_can_update_several_bears_type(cleanup, bear_type, bear_name, bear_
 @allure.title('User can get information about many bears')
 @pytest.mark.read
 @pytest.mark.parametrize('bear_type, bear_name, bear_age, bear_count', [
-    pytest.param(bears.Bear.polar, 'UMKA', 10.1, 10)
+    pytest.param(bears.Bear.polar, 'UMKA', 10.1, 1000)
 ])
 def test_can_get_info_about_many_bears(cleanup, bear_type, bear_name, bear_age, bear_count):
     for bear in range(bear_count):

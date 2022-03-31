@@ -123,7 +123,7 @@ def log_response(response):
 def check_response_ok(response):
     log_response(response)
     with allure.step('Response code is OK'):
-        assert response.status_code == HTTPStatus.OK
+        assert response.status_code == HTTPStatus.OK, "Response status code not OK"
 
 
 @allure.step('User create bear')
@@ -226,12 +226,12 @@ def check_bear(bear: dict, bear_type: Bear, bear_name: str, bear_age: float):
 
         resp_type = bear["bear_type"]
         allure.attach(str(resp_type), 'BEAR TYPE IS', allure.attachment_type.TEXT)
-        assert resp_type == bear_type.value
+        assert resp_type == bear_type.value, "Bear TYPE mismatch"
 
         resp_name = bear["bear_name"]
         allure.attach(str(resp_name), 'BEAR NAME IS', allure.attachment_type.TEXT)
-        assert resp_name == bear_name
+        assert resp_name == bear_name, "Bear NAME mismatch"
 
         resp_age = bear["bear_age"]
         allure.attach(str(resp_age), 'BEAR AGE IS', allure.attachment_type.TEXT)
-        assert resp_age == bear_age
+        assert resp_age == bear_age, "Bear AGE mismatch"
