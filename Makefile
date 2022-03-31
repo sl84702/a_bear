@@ -45,7 +45,7 @@ run-tests-update:
 	pytest -s -m "update" --alluredir=$(CURDIR)/report
 
 clean:
-	rm -rf $(CURDIR)/report/*.json
-	rm -rf $(CURDIR)/report/*.txt
+	find $(CURDIR)/report/ -name "*.json" -delete
+	find $(CURDIR)/report/ -name "*.txt" -delete
 
 .PHONY: pull kill rm docker-run run-tests run-tests-info run-tests-create run-tests-delete run-tests-read run-tests-update clean
