@@ -38,7 +38,7 @@ def get_all_bears():
 
 
 @allure.step('Get one bear')
-def get_one_bear(bear_id):
+def get_one_bear(bear_id: int):
     return requests.get(url=f'{base_url}/{bear_path}/{bear_id}')
 
 
@@ -72,6 +72,7 @@ def user_create_bear(bear_type: Bear, name: str, age: float):
     return response
 
 
+@allure.step('User view all bears')
 def user_view_all_bears():
     with allure.step('User view bear'):
         response = get_all_bears()
@@ -81,3 +82,24 @@ def user_view_all_bears():
         with allure.step('Response code is OK'):
             assert response.status_code == HTTPStatus.OK
         return data
+
+
+@allure.step('Check bear')
+def check_bear(bear: dict, bear_type: Bear, bear_name: str, bear_age: float):
+    with allure.step('Bear info should be correct'):
+        allure.attach(str(bear), 'Bear info is:', allure.attachment_type.TEXT)
+        logging.info(str(bear))
+        bear_id = bear["bear_id"]
+        allure.attach(str(bear_id), 'BEAR ID IS', allure.attachment_type.TEXT)
+
+        resp_type = bear["bear_type"]
+        allure.attach(str(resp_type), 'BEAR TYPE IS', allure.attachment_type.TEXT)
+        assert resp_type == bear_type.value
+
+        resp_name = bear["bear_name"]
+        allure.attach(str(resp_name), 'BEAR NAME IS', allure.attachment_type.TEXT)
+        assert resp_name == bear_name
+
+        resp_age = bear["bear_age"]
+        allure.attach(str(resp_age), 'BEAR AGE IS', allure.attachment_type.TEXT)
+        assert resp_age == bear_age
