@@ -4,6 +4,9 @@
 
     pip3 install -r requirements.txt
 
+### Run tests
+    make run-tests
+
 ### Open allure report
 1. To install allure run in terminal: 
     
