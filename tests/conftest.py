@@ -17,4 +17,5 @@ def http_service(docker_ip, docker_services):
 @pytest.fixture(scope="session")
 @allure.step('Go to docker-compose')
 def docker_compose_file(pytestconfig):
+    """Go to docker-compose file."""
     return os.path.join(str(pytestconfig.rootdir), "tests", "docker-compose.yml")
