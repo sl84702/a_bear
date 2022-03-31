@@ -7,6 +7,7 @@ import logging
 
 from bears.bears_lib import *
 
+
 # LOGGER = logging.getLogger(__name__)
 
 @allure.step('Cleanup')
@@ -86,7 +87,7 @@ def test_can_update_bear_age_to_0(cleanup):
 
 
 @allure.feature('READ')
-@allure.title('User get information about many bears')
+@allure.title('User can get information about many bears')
 @pytest.mark.read
 @pytest.mark.parametrize('bear_type, bear_name, bear_age, bear_count', [
     pytest.param(Bear.polar, 'UMKA', 10.1, 10)
@@ -98,13 +99,9 @@ def test_can_get_info_about_many_bears(cleanup, bear_type, bear_name, bear_age, 
     all_bears = user_view_all_bears()
 
     for bear in all_bears:
-        got_bear = get_one_bear(bear)
-        check_bear(got_bear, bear_type, bear_name, bear_age)
-
-    # bear_id = bear["bear_id"]
-    # bear_info = get_one_bear(bear_id)
-    # with allure.step('User view bear'):
-    #     response = get_all_bears()
+        got_bear = get_one_bear(bear["bear_id"])
+        bear_data = json.loads(got_bear.content.decode("utf-8"))
+        check_bear(bear_data, bear_type, bear_name, bear_age)
 
 
 @allure.feature('READ')

@@ -60,7 +60,7 @@ def is_responsive(url):
 
 def log_response(response):
     LOGGER.info('Status code is: %s', response.status_code)
-    LOGGER.info('Content is: %s', response.content)
+    LOGGER.info('Content is: %s', response.content.decode("utf-8"))
 
 
 def user_create_bear(bear_type: Bear, name: str, age: float):
