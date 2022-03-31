@@ -9,16 +9,16 @@ LOGGER = logging.getLogger(__name__)
 
 
 class Bear(enum.Enum):
-    polar = "POLAR"
-    brown = "BROWN"
-    black = "BLACK"
-    gummy = "GUMMY"
+    polar = 'POLAR'
+    brown = 'BROWN'
+    black = 'BLACK'
+    gummy = 'GUMMY'
 
 
-base_url = "http://0.0.0.0:8091"
+base_url = 'http://0.0.0.0:8091'
 header = {'Content-Type': 'application/json'}
-info_path = "info"
-bear_path = "bear"
+info_path = 'info'
+bear_path = 'bear'
 
 info = """Welcome to Alaska!
 This is CRUD service for bears in alaska.
@@ -117,13 +117,13 @@ def is_responsive(url):
 
 def log_response(response):
     LOGGER.info('Status code is: %s', response.status_code)
-    LOGGER.info('Content is: %s', response.content.decode("utf-8"))
+    LOGGER.info('Content is: %s', response.content.decode('utf-8'))
 
 
 def check_response_ok(response):
     log_response(response)
     with allure.step('Response code is OK'):
-        assert response.status_code == HTTPStatus.OK, "Response status code not OK"
+        assert response.status_code == HTTPStatus.OK, 'Response status code not OK'
 
 
 @allure.step('User create bear')
@@ -221,17 +221,17 @@ def check_bear(bear: dict, bear_type: Bear, bear_name: str, bear_age: float):
     with allure.step('Bear info should be correct'):
         allure.attach(str(bear), 'Bear info is:', allure.attachment_type.TEXT)
         logging.info(str(bear))
-        bear_id = bear["bear_id"]
+        bear_id = bear['bear_id']
         allure.attach(str(bear_id), 'BEAR ID IS', allure.attachment_type.TEXT)
 
-        resp_type = bear["bear_type"]
+        resp_type = bear['bear_type']
         allure.attach(str(resp_type), 'BEAR TYPE IS', allure.attachment_type.TEXT)
-        assert resp_type == bear_type.value, "Bear TYPE mismatch"
+        assert resp_type == bear_type.value, 'Bear TYPE mismatch'
 
-        resp_name = bear["bear_name"]
+        resp_name = bear['bear_name']
         allure.attach(str(resp_name), 'BEAR NAME IS', allure.attachment_type.TEXT)
-        assert resp_name == bear_name, "Bear NAME mismatch"
+        assert resp_name == bear_name, 'Bear NAME mismatch'
 
-        resp_age = bear["bear_age"]
+        resp_age = bear['bear_age']
         allure.attach(str(resp_age), 'BEAR AGE IS', allure.attachment_type.TEXT)
-        assert resp_age == bear_age, "Bear AGE mismatch"
+        assert resp_age == bear_age, 'Bear AGE mismatch'

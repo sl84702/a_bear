@@ -20,7 +20,7 @@ def test_get_info(cleanup):
         response = bears.get_info()
     bears.check_response_ok(response)
     with allure.step('And information is correctly'):
-        assert response.content.decode("utf-8") == bears.info, "Information is incorrect"
+        assert response.content.decode('utf-8') == bears.info, 'Information is incorrect'
 
 
 
@@ -31,7 +31,7 @@ def test_get_info(cleanup):
     pytest.param(bears.Bear.polar, 'UMKA', 10.1, 10),
     pytest.param(bears.Bear.brown, 'BROWNBEAR', 11.2, 10),
     pytest.param(bears.Bear.black, 'BLACKBEAR', 12.3, 10),
-    pytest.param(bears.Bear.gummy, 'GUMMYBEAR', 13.4, 10, marks=pytest.mark.xfail(reason="Bug", strict=True))
+    pytest.param(bears.Bear.gummy, 'GUMMYBEAR', 13.4, 10, marks=pytest.mark.xfail(reason='Bug', strict=True))
 ])
 def test_user_can_create_several_bear(cleanup, bear_type, bear_name, bear_age, bear_count):
     for bear in range(bear_count):
@@ -39,7 +39,7 @@ def test_user_can_create_several_bear(cleanup, bear_type, bear_name, bear_age, b
 
     all_bears = bears.user_view_all_bears()
     with allure.step('Counting bears'):
-        assert len(all_bears) == bear_count, "The number of bears does not match"
+        assert len(all_bears) == bear_count, 'The number of bears does not match'
 
     for bear in all_bears:
         bears.check_bear(bear, bear_type, bear_name, bear_age)
@@ -56,7 +56,7 @@ def test_user_can_delete_all_bears_bear_count_1(cleanup, bear_type, bear_name, b
     bears.user_clean_all_bears()
     all_bears = bears.user_view_all_bears()
     with allure.step('There should only be 0 bears'):
-        assert len(all_bears) == 0, "Bears should not be after delete"
+        assert len(all_bears) == 0, 'Bears should not be after delete'
 
 
 @allure.feature('DELETE')
@@ -71,18 +71,18 @@ def test_user_can_delete_several_bears_one_by_one(cleanup, bear_type, bear_name,
 
     all_bears = bears.user_view_all_bears()
     for bear in all_bears:
-        bears.user_delete_one_bear(bear["bear_id"])
+        bears.user_delete_one_bear(bear['bear_id'])
 
     all_bears = bears.user_view_all_bears()
     with allure.step('There should only be 0 bears'):
-        assert len(all_bears) == 0, "Bears should not be after delete"
+        assert len(all_bears) == 0, 'Bears should not be after delete'
 
 
 @allure.feature('UPDATE')
 @allure.title('User can update several bears age one by one')
 @pytest.mark.update
 @pytest.mark.parametrize('bear_type, bear_name, bear_age, bear_count', [
-    pytest.param(bears.Bear.polar, 'UMKA', 10.1, 10, marks=pytest.mark.xfail(reason="Bug", strict=True))
+    pytest.param(bears.Bear.polar, 'UMKA', 10.1, 10, marks=pytest.mark.xfail(reason='Bug', strict=True))
 ])
 def test_user_can_update_several_bears_age(cleanup, bear_type, bear_name, bear_age, bear_count):
     new_age = 20.2
@@ -91,9 +91,9 @@ def test_user_can_update_several_bears_age(cleanup, bear_type, bear_name, bear_a
 
     all_bears = bears.user_view_all_bears()
     for bear in all_bears:
-        bears.user_update_bear(bear["bear_id"], bear_type, bear_name, new_age)
-        got_bear = bears.user_get_one_bear(bear["bear_id"])
-        bear_data = json.loads(got_bear.content.decode("utf-8"))
+        bears.user_update_bear(bear['bear_id'], bear_type, bear_name, new_age)
+        got_bear = bears.user_get_one_bear(bear['bear_id'])
+        bear_data = json.loads(got_bear.content.decode('utf-8'))
         bears.check_bear(bear_data, bear_type, bear_name, new_age)
 
 
@@ -104,15 +104,15 @@ def test_user_can_update_several_bears_age(cleanup, bear_type, bear_name, bear_a
     pytest.param(bears.Bear.polar, 'UMKA', 10.1, 10)
 ])
 def test_user_can_update_several_bears_name(cleanup, bear_type, bear_name, bear_age, bear_count):
-    new_name = "NIDA"
+    new_name = 'NIDA'
     for bear in range(bear_count):
         bears.user_create_bear(bear_type, bear_name, bear_age)
 
     all_bears = bears.user_view_all_bears()
     for bear in all_bears:
-        bears.user_update_bear(bear["bear_id"], bear_type, new_name, bear_age)
-        got_bear = bears.user_get_one_bear(bear["bear_id"])
-        bear_data = json.loads(got_bear.content.decode("utf-8"))
+        bears.user_update_bear(bear['bear_id'], bear_type, new_name, bear_age)
+        got_bear = bears.user_get_one_bear(bear['bear_id'])
+        bear_data = json.loads(got_bear.content.decode('utf-8'))
         bears.check_bear(bear_data, bear_type, new_name, bear_age)
 
 
@@ -120,7 +120,7 @@ def test_user_can_update_several_bears_name(cleanup, bear_type, bear_name, bear_
 @allure.title('User can update several bears type one by one')
 @pytest.mark.update
 @pytest.mark.parametrize('bear_type, bear_name, bear_age, bear_count', [
-    pytest.param(bears.Bear.polar, 'UMKA', 10.1, 10, marks=pytest.mark.xfail(reason="Bug", strict=True))
+    pytest.param(bears.Bear.polar, 'UMKA', 10.1, 10, marks=pytest.mark.xfail(reason='Bug', strict=True))
 ])
 def test_user_can_update_several_bears_type(cleanup, bear_type, bear_name, bear_age, bear_count):
     new_type = bears.Bear.brown
@@ -129,9 +129,9 @@ def test_user_can_update_several_bears_type(cleanup, bear_type, bear_name, bear_
 
     all_bears = bears.user_view_all_bears()
     for bear in all_bears:
-        bears.user_update_bear(bear["bear_id"], new_type, bear_name, bear_age)
-        got_bear = bears.user_get_one_bear(bear["bear_id"])
-        bear_data = json.loads(got_bear.content.decode("utf-8"))
+        bears.user_update_bear(bear['bear_id'], new_type, bear_name, bear_age)
+        got_bear = bears.user_get_one_bear(bear['bear_id'])
+        bear_data = json.loads(got_bear.content.decode('utf-8'))
         bears.check_bear(bear_data, new_type, bear_name, bear_age)
 
 
@@ -148,6 +148,6 @@ def test_can_get_info_about_many_bears(cleanup, bear_type, bear_name, bear_age, 
     all_bears = bears.user_view_all_bears()
 
     for bear in all_bears:
-        got_bear = bears.user_get_one_bear(bear["bear_id"])
-        bear_data = json.loads(got_bear.content.decode("utf-8"))
+        got_bear = bears.user_get_one_bear(bear['bear_id'])
+        bear_data = json.loads(got_bear.content.decode('utf-8'))
         bears.check_bear(bear_data, bear_type, bear_name, bear_age)
