@@ -7,7 +7,12 @@ import bears.bears_lib as bears
 @allure.step('Wait docker service')
 @pytest.fixture(scope='session')
 def http_service(docker_ip, docker_services):
-    """Ensure that HTTP service is up and responsive."""
+    """
+    Ensure that HTTP service is up and responsive.
+
+    Return:
+        docker service URL
+    """
     docker_services.wait_until_responsive(
         timeout=10.0, pause=0.1, check=lambda: bears.is_responsive(url=f'{bears.base_url}/{bears.info_path}')
     )
@@ -17,5 +22,10 @@ def http_service(docker_ip, docker_services):
 @pytest.fixture(scope='session')
 @allure.step('Go to docker-compose')
 def docker_compose_file(pytestconfig):
-    """Go to docker-compose file."""
+    """
+    Go to docker-compose file
+
+    Return:
+            Api-response - Path to docker-compose.yml
+    """
     return os.path.join(str(pytestconfig.rootdir), 'tests', 'docker-compose.yml')
