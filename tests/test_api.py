@@ -60,22 +60,29 @@ def test_user_can_create_several_bear(cleanup, bear_type, bear_name, bear_age, b
 ])
 def test_user_can_delete_all_bears_bear_count_1(cleanup, bear_type, bear_name, bear_age):
     user_create_bear(bear_type, bear_name, bear_age)
-    with allure.step('User delete all bears'):
-        response = clean_bears()
-        log_response(response)
-    with allure.step('Response code is OK'):
-        assert response.status_code == HTTPStatus.OK
+    user_clean_all_bears()
     all_bears = user_view_all_bears()
     with allure.step('There should only be 0 bears'):
         assert len(all_bears) == 0
 
 
 @allure.feature('DELETE')
-@allure.title('User can delete one bear')
+@allure.title('User can delete several bears one by one')
 @pytest.mark.delete
-def test_user_can_delete_one_bear(cleanup):
-    with allure.step('User view bear'):
-        response = get_all_bears()
+@pytest.mark.parametrize('bear_type, bear_name, bear_age, bear_count', [
+    pytest.param(Bear.polar, 'UMKA', 10.1, 10)
+])
+def test_user_can_delete_several_bears_one_by_one(cleanup, bear_type, bear_name, bear_age, bear_count):
+    for bear in range(bear_count):
+        user_create_bear(bear_type, bear_name, bear_age)
+
+    all_bears = user_view_all_bears()
+    for bear in all_bears:
+        user_delete_one_bear(bear["bear_id"])
+
+    all_bears = user_view_all_bears()
+    with allure.step('There should only be 0 bears'):
+        assert len(all_bears) == 0
 
 
 @allure.feature('UPDATE')
@@ -99,14 +106,19 @@ def test_can_get_info_about_many_bears(cleanup, bear_type, bear_name, bear_age, 
     all_bears = user_view_all_bears()
 
     for bear in all_bears:
-        got_bear = get_one_bear(bear["bear_id"])
+        got_bear = user_get_one_bear(bear["bear_id"])
         bear_data = json.loads(got_bear.content.decode("utf-8"))
         check_bear(bear_data, bear_type, bear_name, bear_age)
 
 
 @allure.feature('READ')
-@allure.title('User cannot get information about one bear using invalid id')
+@allure.title('User cannot get information about a non-existent bear')
 @pytest.mark.read
-def test_user_cannot_get_info_using_invalid_id(cleanup):
-    with allure.step('User view bear'):
-        response = get_all_bears()
+def test_user_cannot_get_info_about_non_existent_bear(cleanup):
+    invalid_id = 1
+    with allure.step('Using invalid id'):
+        got_bear = user_get_one_bear(invalid_id)
+        bear_data = json.loads(got_bear.content.decode("utf-8"))
+        allure.attach(str(bear_data), 'Bear info is:', allure.attachment_type.TEXT)
+        logging.info(str(bear_data))
+

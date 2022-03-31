@@ -42,6 +42,11 @@ def get_one_bear(bear_id: int):
     return requests.get(url=f'{base_url}/{bear_path}/{bear_id}')
 
 
+@allure.step('Delete one bear')
+def delete_one_bear(bear_id: int):
+    return requests.delete(url=f'{base_url}/{bear_path}/{bear_id}')
+
+
 @allure.step('Create new bear')
 def create_new_bear(bear_type: Bear, name: str, age: float):
     return requests.post(url=f'{base_url}/{bear_path}',
@@ -63,12 +68,41 @@ def log_response(response):
     LOGGER.info('Content is: %s', response.content.decode("utf-8"))
 
 
+def check_response_ok(response):
+    log_response(response)
+    with allure.step('Response code is OK'):
+        assert response.status_code == HTTPStatus.OK
+
+
+@allure.step('User create bear')
 def user_create_bear(bear_type: Bear, name: str, age: float):
     with allure.step('User create simple new bear'):
         response = create_new_bear(bear_type, name, age)
-        log_response(response)
-    with allure.step('Response code is OK'):
-        assert response.status_code == HTTPStatus.OK
+    check_response_ok(response)
+    return response
+
+
+@allure.step('User get bear')
+def user_get_one_bear(bear_id: int):
+    with allure.step('User get one bear'):
+        response = get_one_bear(bear_id)
+    check_response_ok(response)
+    return response
+
+
+@allure.step('User delete bear')
+def user_delete_one_bear(bear_id: int):
+    with allure.step('User delete one bear'):
+        response = delete_one_bear(bear_id)
+    check_response_ok(response)
+    return response
+
+
+@allure.step('User clean all bears')
+def user_clean_all_bears():
+    with allure.step('User clean all bears in Alaska'):
+        response = clean_bears()
+    check_response_ok(response)
     return response
 
 
@@ -76,12 +110,10 @@ def user_create_bear(bear_type: Bear, name: str, age: float):
 def user_view_all_bears():
     with allure.step('User view bear'):
         response = get_all_bears()
-        log_response(response)
-        data = response.json()
-        allure.attach(str(data), 'BEARS LIST IS', allure.attachment_type.TEXT)
-        with allure.step('Response code is OK'):
-            assert response.status_code == HTTPStatus.OK
-        return data
+    check_response_ok(response)
+    data = response.json()
+    allure.attach(str(data), 'BEARS LIST IS', allure.attachment_type.TEXT)
+    return data
 
 
 @allure.step('Check bear')
