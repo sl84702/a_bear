@@ -1,6 +1,7 @@
 import os
-
-from bears.bears_lib import *
+import pytest
+import allure
+import bears.bears_lib as bears
 
 
 @allure.step('Wait docker service')
@@ -8,14 +9,14 @@ from bears.bears_lib import *
 def http_service(docker_ip, docker_services):
     """Ensure that HTTP service is up and responsive."""
     docker_services.wait_until_responsive(
-        timeout=10.0, pause=0.1, check=lambda: is_responsive(url=f'{base_url}/{info_path}')
+        timeout=10.0, pause=0.1, check=lambda: bears.is_responsive(url=f'{bears.base_url}/{bears.info_path}')
     )
-    return base_url
+    return bears.base_url
 
 
 def test_status_code(http_service):
     status = 418
-    response = requests.get(http_service + "/status/{}".format(status))
+    response = bears.requests.get(http_service + "/status/{}".format(status))
 
     assert response.status_code == status
 

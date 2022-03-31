@@ -1,6 +1,5 @@
 import enum
 import allure
-import pytest
 import requests
 import logging
 from http import HTTPStatus
@@ -146,6 +145,15 @@ def user_view_all_bears():
 
 @allure.step('Check bear')
 def check_bear(bear: dict, bear_type: Bear, bear_name: str, bear_age: float):
+    """
+    Verify bear fields match expected values
+
+    Args:
+        :param bear: bears information
+        :param bear_age:
+        :param bear_name:
+        :param bear_type:
+    """
     with allure.step('Bear info should be correct'):
         allure.attach(str(bear), 'Bear info is:', allure.attachment_type.TEXT)
         logging.info(str(bear))
